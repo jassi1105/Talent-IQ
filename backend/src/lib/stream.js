@@ -5,19 +5,35 @@ import { ENV } from "./env.js";
 const apiKey = ENV.STREAM_API_KEY;
 const apiSecret = ENV.STREAM_API_SECRET;
 
+// Validate environment variables
 if (!apiKey || !apiSecret) {
-  console.error("STREAM_API_KEY or STREAM_API_SECRET is missing");
+  throw new Error(
+    "STREAM_API_KEY or STREAM_API_SECRET is missing. Please configure them in your environment variables."
+  );
 }
 
-export const chatClient = StreamChat.getInstance(apiKey, apiSecret); // will be used chat features
-export const streamClient = new StreamClient(apiKey, apiSecret); // will be used for video calls
+console.log("✓ Stream API Key found");
+console.log("✓ Stream API Secret found");
+
+// Chat client (Messaging)
+export const chatClient = StreamChat.getInstance(
+  apiKey,
+  apiSecret
+);
+
+// Video client (Calls)
+export const streamClient = new StreamClient(
+  apiKey,
+  apiSecret
+);
 
 export const upsertStreamUser = async (userData) => {
   try {
     await chatClient.upsertUser(userData);
-    console.log("Stream user upserted successfully:", userData);
+    console.log("Stream user upserted successfully:", userData.id);
   } catch (error) {
     console.error("Error upserting Stream user:", error);
+    throw error;
   }
 };
 
@@ -26,6 +42,7 @@ export const deleteStreamUser = async (userId) => {
     await chatClient.deleteUser(userId);
     console.log("Stream user deleted successfully:", userId);
   } catch (error) {
-    console.error("Error deleting the Stream user:", error);
+    console.error("Error deleting Stream user:", error);
+    throw error;
   }
 };
