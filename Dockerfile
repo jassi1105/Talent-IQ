@@ -1,9 +1,15 @@
-# =========================
-# FRONTEND BUILD
-# =========================
+# =====================
+# Frontend Build
+# =====================
 FROM node:22 AS frontend-builder
 
 WORKDIR /app/frontend
+
+ARG VITE_CLERK_PUBLISHABLE_KEY
+ARG VITE_STREAM_API_KEY
+
+ENV VITE_CLERK_PUBLISHABLE_KEY=$VITE_CLERK_PUBLISHABLE_KEY
+ENV VITE_STREAM_API_KEY=$VITE_STREAM_API_KEY
 
 COPY frontend/package*.json ./
 
@@ -14,9 +20,9 @@ COPY frontend .
 RUN npm run build
 
 
-# =========================
-# BACKEND
-# =========================
+# =====================
+# Backend
+# =====================
 FROM node:22
 
 WORKDIR /app
