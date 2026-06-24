@@ -13,8 +13,8 @@ import chatRoutes from "./routes/chatRoutes.js";
 import sessionRoutes from "./routes/sessionRoute.js";
 
 const app = express();
-console.log("NODE_ENV =", ENV.NODE_ENV);
 
+console.log("NODE_ENV =", ENV.NODE_ENV);
 console.log("PORT =", ENV.PORT);
 
 // ES Module __dirname setup
@@ -36,7 +36,7 @@ if (ENV.NODE_ENV !== "production") {
 
 app.use(clerkMiddleware());
 
-// Routes
+// API Routes
 app.use("/api/inngest", serve({ client: inngest, functions }));
 app.use("/api/chat", chatRoutes);
 app.use("/api/sessions", sessionRoutes);
@@ -57,10 +57,12 @@ if (ENV.NODE_ENV === "production") {
 
   app.use(express.static(frontendPath));
 
-  app.get("*", (req, res) => {
+  // React Router fallback (Express 5 compatible)
+  app.get(/.*/, (req, res) => {
     res.sendFile(path.join(frontendPath, "index.html"));
   });
 }
+
 // Start Server
 const startServer = async () => {
   try {
