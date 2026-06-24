@@ -27,15 +27,38 @@ export const streamClient = new StreamClient(
   apiSecret
 );
 
+// export const upsertStreamUser = async (userData) => {
+//   try {
+//     const x=await chatClient.upsertUser(userData);
+//     console.log(x);
+//     console.log("Stream user upserted successfully:", userData.id);
+//   } catch (error) {
+//     console.error("Error upserting Stream user:", error);
+//     throw error;
+//   }
+// };
+
 export const upsertStreamUser = async (userData) => {
   try {
-    await chatClient.upsertUser(userData);
-    console.log("Stream user upserted successfully:", userData.id);
+    console.log("Creating Stream user:", userData);
+
+    const result = await chatClient.upsertUser(userData);
+
+    console.log("Upsert result:", JSON.stringify(result));
+
+    const users = await chatClient.queryUsers({
+      id: { $eq: userData.id },
+    });
+
+    console.log("Query result:", JSON.stringify(users));
+
+    return result;
   } catch (error) {
-    console.error("Error upserting Stream user:", error);
+    console.error("Stream Error:", error);
     throw error;
   }
 };
+
 
 export const deleteStreamUser = async (userId) => {
   try {
