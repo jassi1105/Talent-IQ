@@ -13,6 +13,9 @@ import chatRoutes from "./routes/chatRoutes.js";
 import sessionRoutes from "./routes/sessionRoute.js";
 
 const app = express();
+console.log("NODE_ENV =", ENV.NODE_ENV);
+
+console.log("PORT =", ENV.PORT);
 
 // ES Module __dirname setup
 const __filename = fileURLToPath(import.meta.url);
@@ -50,13 +53,14 @@ app.get("/health", (req, res) => {
 if (ENV.NODE_ENV === "production") {
   const frontendPath = path.join(__dirname, "../../frontend/dist");
 
+  console.log("Frontend Path =", frontendPath);
+
   app.use(express.static(frontendPath));
 
-  app.get("/{*any}", (req, res) => {
+  app.get("*", (req, res) => {
     res.sendFile(path.join(frontendPath, "index.html"));
   });
 }
-
 // Start Server
 const startServer = async () => {
   try {
